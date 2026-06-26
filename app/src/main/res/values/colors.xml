@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="accent">#2563EB</color>
+    <color name="accent">#1A56DB</color>
     <color name="accentLight">#DBEAFE</color>
-    <color name="bgMain">#F1F5F9</color>
+    <color name="bgMain">#E2E8F0</color>
     <color name="cardBg">#FFFFFF</color>
     <color name="textPrimary">#0F172A</color>
-    <color name="textSecondary">#64748B</color>
-    <color name="green">#16A34A</color>
-    <color name="greenLight">#DCFCE7</color>
-    <color name="red">#DC2626</color>
-    <color name="redLight">#FEE2E2</color>
-    <color name="btnSecondary">#64748B</color>
-    <color name="btnTertiary">#94A3B8</color>
+    <color name="textSecondary">#475569</color>
+    <color name="green">#15803D</color>
+    <color name="greenLight">#BBF7D0</color>
+    <color name="red">#B91C1C</color>
+    <color name="redLight">#FECACA</color>
+    <color name="btnSecondary">#475569</color>
+    <color name="btnTertiary">#64748B</color>
+    <color name="itemBg">#F8FAFC</color>
+    <color name="itemBorder">#CBD5E1</color>
 </resources>

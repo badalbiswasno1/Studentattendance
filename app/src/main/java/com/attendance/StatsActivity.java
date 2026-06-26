@@ -19,7 +19,7 @@ public class StatsActivity extends AppCompatActivity {
     private AttendanceDao attendanceDao;
     private SubjectDao subjectDao;
     private String startDate = "", endDate = "";
-    private TextView tvStartDate, tvEndDate, tvOverallPct, tvOverallDetail, tvWarningMsg;
+    private TextView tvStartDate, tvEndDate, tvOverallPct, tvOverallDetail, tvWarningMsg, tvDev;
     private LinearLayout llSubjectStats;
     private Button btnPickStart, btnPickEnd, btnFilter;
     private View warningBar;
@@ -40,6 +40,8 @@ public class StatsActivity extends AppCompatActivity {
         btnFilter = findViewById(R.id.btnFilter);
         warningBar = findViewById(R.id.warningBar);
         tvWarningMsg = findViewById(R.id.tvWarningMsg);
+        tvDev = findViewById(R.id.tvDev);
+        tvDev.setText("Developed by Badal Biswas");
         btnPickStart.setOnClickListener(v -> pickDate(true));
         btnPickEnd.setOnClickListener(v -> pickDate(false));
         btnFilter.setOnClickListener(v -> loadStats());
@@ -48,7 +50,7 @@ public class StatsActivity extends AppCompatActivity {
             endDate = allDates.get(0);
             startDate = allDates.get(allDates.size() - 1);
         } else {
-            startDate = "2024-01-01";
+            startDate = MainActivity.getTodayString();
             endDate = MainActivity.getTodayString();
         }
         tvStartDate.setText(startDate);
@@ -56,29 +58,43 @@ public class StatsActivity extends AppCompatActivity {
         loadStats();
     }
     private void pickDate(boolean isStart) {
-        Calendar cal = Calendar.getInstance();
+        String current = isStart ? startDate : endDate;
+        int y = 2026, m = 5, d = 27;
+        try {
+            String[] parts = current.split("-");
+            y = Integer.parseInt(parts[0]);
+            m = Integer.parseInt(parts[1]) - 1;
+            d = Integer.parseInt(parts[2]);
+        } catch (Exception ignored) {}
         new DatePickerDialog(this, (view, year, month, day) -> {
             String date = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, day);
-            if (isStart) { startDate = date; tvStartDate.setText(date); }
-            else { endDate = date; tvEndDate.setText(date); }
-        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
+            if (isStart) {
+                startDate = date;
+                tvStartDate.setText(date);
+            } else {
+                endDate = date;
+                tvEndDate.setText(date);
+            }
+        }, y, m, d).show();
     }
     private void loadStats() {
         if (startDate.isEmpty() || endDate.isEmpty()) return;
-        int present = attendanceDao.countPresent(startDate, endDate);
-        int total = attendanceDao.countTotal(startDate, endDate);
+        String from = startDate.compareTo(endDate) <= 0 ? startDate : endDate;
+        String to = startDate.compareTo(endDate) <= 0 ? endDate : startDate;
+        int present = attendanceDao.countPresent(from, to);
+        int total = attendanceDao.countTotal(from, to);
         float pct = total > 0 ? (present * 100f / total) : 0;
         tvOverallPct.setText(String.format(Locale.getDefault(), "%.1f%%", pct));
         tvOverallDetail.setText(present + " present / " + total + " total");
         if (pct < 75 && total > 0) {
             warningBar.setVisibility(View.VISIBLE);
-            int needed = (int) Math.ceil((75 * total - 100 * present) / 25.0);
+            int needed = (int) Math.ceil((75.0 * total - 100.0 * present) / 25.0);
             tvWarningMsg.setText("Need " + needed + " more classes to reach 75%");
         } else {
             warningBar.setVisibility(View.GONE);
         }
         llSubjectStats.removeAllViews();
-        List<SubjectAttendanceSummary> summaries = attendanceDao.getSubjectSummary(startDate, endDate);
+        List<SubjectAttendanceSummary> summaries = attendanceDao.getSubjectSummary(from, to);
         for (SubjectAttendanceSummary s : summaries) {
             Subject found = null;
             for (Subject sub : subjectDao.getAll()) {
