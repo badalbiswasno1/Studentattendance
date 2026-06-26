@@ -11,7 +11,6 @@ import com.attendance.db.AttendanceDao;
 import com.attendance.db.SubjectAttendanceSummary;
 import com.attendance.db.SubjectDao;
 import com.attendance.model.Subject;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 public class StatsActivity extends AppCompatActivity {
@@ -75,6 +74,7 @@ public class StatsActivity extends AppCompatActivity {
                 endDate = date;
                 tvEndDate.setText(date);
             }
+            loadStats();
         }, y, m, d).show();
     }
     private void loadStats() {
