@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="accent">#2563EB</color>
+    <color name="accentLight">#DBEAFE</color>
+    <color name="bgMain">#F1F5F9</color>
+    <color name="cardBg">#FFFFFF</color>
+    <color name="textPrimary">#0F172A</color>
+    <color name="textSecondary">#64748B</color>
+    <color name="green">#16A34A</color>
+    <color name="greenLight">#DCFCE7</color>
+    <color name="red">#DC2626</color>
+    <color name="redLight">#FEE2E2</color>
+    <color name="btnSecondary">#64748B</color>
+    <color name="btnTertiary">#94A3B8</color>
+</resources>
