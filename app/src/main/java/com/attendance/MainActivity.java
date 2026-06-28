@@ -2,7 +2,6 @@ package com.attendance;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,8 +39,10 @@ public class MainActivity extends AppCompatActivity {
             i.putExtra("date", getTodayString());
             startActivity(i);
         });
-        findViewById(R.id.btnStats).setOnClickListener(v -> startActivity(new Intent(this, StatsActivity.class)));
-        findViewById(R.id.btnCalendar).setOnClickListener(v -> startActivity(new Intent(this, CalendarActivity.class)));
+        findViewById(R.id.btnStats).setOnClickListener(v ->
+            startActivity(new Intent(this, StatsActivity.class)));
+        findViewById(R.id.btnCalendar).setOnClickListener(v ->
+            startActivity(new Intent(this, CalendarActivity.class)));
         findViewById(R.id.btnSetup).setOnClickListener(v -> {
             String[] opts = {"Setup Subjects", "Settings"};
             new AlertDialog.Builder(this).setTitle("Options")
@@ -51,11 +52,13 @@ public class MainActivity extends AppCompatActivity {
                 }).show();
         });
         findViewById(R.id.btnSwitch).setOnClickListener(v -> {
-        findViewById(R.id.btnExamTracker).setOnClickListener(v -> startActivity(new Intent(this, ExamTrackerActivity.class)));
-        findViewById(R.id.btnTimetable).setOnClickListener(v -> startActivity(new Intent(this, TimetableActivity.class)));
             startActivity(new Intent(this, ProfileSelectActivity.class));
             finish();
         });
+        findViewById(R.id.btnExamTracker).setOnClickListener(v ->
+            startActivity(new Intent(this, ExamTrackerActivity.class)));
+        findViewById(R.id.btnTimetable).setOnClickListener(v ->
+            startActivity(new Intent(this, TimetableActivity.class)));
     }
     @Override
     protected void onResume() { super.onResume(); loadDashboard(); }
@@ -125,4 +128,3 @@ public class MainActivity extends AppCompatActivity {
         return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
     }
 }
-// This will be added via sed below
