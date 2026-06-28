@@ -6,14 +6,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:theme="@style/Theme.AttendanceApp">
-        <activity android:name=".MainActivity" android:exported="true">
+        <activity android:name=".ProfileSelectActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity" android:exported="false"/>
         <activity android:name=".SetupActivity" android:exported="false"/>
         <activity android:name=".AttendanceActivity" android:exported="false"/>
         <activity android:name=".StatsActivity" android:exported="false"/>
+        <activity android:name=".CalendarActivity" android:exported="false"/>
+        <activity android:name=".TeacherMainActivity" android:exported="false"/>
+        <activity android:name=".TeacherAttendanceActivity" android:exported="false"/>
+        <activity android:name=".StudentListActivity" android:exported="false"/>
+        <activity android:name=".StudentDetailActivity" android:exported="false"/>
+        <activity android:name=".ExamMarksActivity" android:exported="false"/>
     </application>
 </manifest>

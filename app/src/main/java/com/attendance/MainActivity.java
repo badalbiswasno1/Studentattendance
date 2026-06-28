@@ -3,9 +3,7 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -17,9 +15,8 @@ import java.util.List;
 import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private AppDatabase db;
-    private TextView tvPercent, tvDate, tvGoal, tvNeeded, tvCanMiss, tvStatus, tvStreak, tvPrediction, tvMotivation;
+    private TextView tvPercent, tvDate, tvGoal, tvNeeded, tvCanMiss, tvStatus, tvStreak, tvPrediction, tvMotivation, tvDev;
     private CardView cardStatus;
-    private Button btnMark, btnStats, btnSetup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,24 +31,25 @@ public class MainActivity extends AppCompatActivity {
         tvStreak     = findViewById(R.id.tvStreak);
         tvPrediction = findViewById(R.id.tvPrediction);
         tvMotivation = findViewById(R.id.tvMotivation);
+        tvDev        = findViewById(R.id.tvDev);
         cardStatus   = findViewById(R.id.cardStatus);
-        btnMark  = findViewById(R.id.btnMark);
-        btnStats = findViewById(R.id.btnStats);
-        btnSetup = findViewById(R.id.btnSetup);
-        btnMark.setOnClickListener(v -> {
+        tvDev.setText("Developed by Badal Biswas • badalbiswasno5@gmail.com");
+        tvGoal.setOnClickListener(v -> showGoalPicker());
+        findViewById(R.id.btnMark).setOnClickListener(v -> {
             Intent i = new Intent(this, AttendanceActivity.class);
             i.putExtra("date", getTodayString());
             startActivity(i);
         });
-        btnStats.setOnClickListener(v -> startActivity(new Intent(this, StatsActivity.class)));
-        btnSetup.setOnClickListener(v -> startActivity(new Intent(this, SetupActivity.class)));
-        tvGoal.setOnClickListener(v -> showGoalPicker());
+        findViewById(R.id.btnStats).setOnClickListener(v -> startActivity(new Intent(this, StatsActivity.class)));
+        findViewById(R.id.btnSetup).setOnClickListener(v -> startActivity(new Intent(this, SetupActivity.class)));
+        findViewById(R.id.btnCalendar).setOnClickListener(v -> startActivity(new Intent(this, CalendarActivity.class)));
+        findViewById(R.id.btnSwitch).setOnClickListener(v -> {
+            startActivity(new Intent(this, ProfileSelectActivity.class));
+            finish();
+        });
     }
     @Override
-    protected void onResume() {
-        super.onResume();
-        loadDashboard();
-    }
+    protected void onResume() { super.onResume(); loadDashboard(); }
     private void loadDashboard() {
         AttendanceDao dao = db.attendanceDao();
         List<String> allDates = dao.getAllDates();
@@ -59,15 +57,11 @@ public class MainActivity extends AppCompatActivity {
         tvDate.setText(getTodayString());
         tvGoal.setText("Goal: " + goal + "% (tap to change)");
         if (allDates.isEmpty()) {
-            tvPercent.setText("0%");
-            tvNeeded.setText("Mark attendance to begin");
-            tvCanMiss.setText("-");
-            tvStreak.setText("Streak: 0 days");
-            tvStatus.setText("No Data");
-            tvPrediction.setText("Start marking attendance");
+            tvPercent.setText("0%"); tvNeeded.setText("Mark attendance to begin");
+            tvCanMiss.setText("-"); tvStreak.setText("Streak: 0 days");
+            tvStatus.setText("No Data"); tvPrediction.setText("Start marking attendance");
             tvMotivation.setText("Welcome! Set up subjects and start tracking.");
-            cardStatus.setCardBackgroundColor(0xFF94A3B8);
-            return;
+            cardStatus.setCardBackgroundColor(0xFF94A3B8); return;
         }
         String minDate = allDates.get(allDates.size() - 1);
         String maxDate = allDates.get(0);
@@ -76,53 +70,35 @@ public class MainActivity extends AppCompatActivity {
         AttendanceStats stats = new AttendanceStats(present, total, goal);
         float pct = stats.getPercent();
         animatePercent(pct);
-        int canMiss = stats.canMiss();
+        tvCanMiss.setText(stats.canMiss() > 0 ? "Can miss " + stats.canMiss() + " more" : "Cannot miss any!");
         int needed = stats.needToAttend();
-        float ifMiss = stats.percentIfMissNext();
-        if (needed > 0) {
-            tvNeeded.setText("Attend " + needed + " more to reach " + goal + "%");
-        } else {
-            tvNeeded.setText("On track for " + goal + "% goal");
-        }
-        tvCanMiss.setText(canMiss > 0 ? "Can miss " + canMiss + " more classes safely" : "Cannot miss any class!");
-        tvPrediction.setText(String.format(Locale.getDefault(), "If you miss tomorrow: %.1f%%", ifMiss));
+        tvNeeded.setText(needed > 0 ? "Attend " + needed + " more to reach " + goal + "%" : "On track for " + goal + "% goal");
+        tvPrediction.setText(String.format(Locale.getDefault(), "If miss tomorrow: %.1f%%", stats.percentIfMissNext()));
         List<String> presentDates = dao.getPresentDates();
-        String streak = stats.getStreakInfo(presentDates);
-        tvStreak.setText("Current Streak: " + streak + " days");
-        String risk = stats.getRiskLevel();
-        switch (risk) {
+        tvStreak.setText("Streak: " + stats.getStreakInfo(presentDates) + " days");
+        switch (stats.getRiskLevel()) {
             case "SAFE":
-                tvStatus.setText("SAFE");
-                cardStatus.setCardBackgroundColor(0xFF16A34A);
-                tvMotivation.setText(pct >= 90 ? "Excellent! Perfect attendance." : "Great! Keep attending.");
-                break;
+                tvStatus.setText("SAFE"); cardStatus.setCardBackgroundColor(0xFF16A34A);
+                tvMotivation.setText(pct >= 90 ? "Excellent! Perfect attendance." : "Great! Keep attending."); break;
             case "WARNING":
-                tvStatus.setText("WARNING");
-                cardStatus.setCardBackgroundColor(0xFFF59E0B);
-                tvMotivation.setText("Getting close to limit. Be careful!");
-                break;
+                tvStatus.setText("WARNING"); cardStatus.setCardBackgroundColor(0xFFF59E0B);
+                tvMotivation.setText("Getting close to limit. Be careful!"); break;
             default:
-                tvStatus.setText("EXAM RISK");
-                cardStatus.setCardBackgroundColor(0xFFDC2626);
-                tvMotivation.setText("Danger! Attendance below requirement. Attend all classes.");
-                break;
+                tvStatus.setText("EXAM RISK"); cardStatus.setCardBackgroundColor(0xFFDC2626);
+                tvMotivation.setText("Danger! Attend all classes immediately."); break;
         }
     }
     private void animatePercent(float target) {
-        ValueAnimator anim = ValueAnimator.ofFloat(0f, target);
-        anim.setDuration(800);
-        anim.addUpdateListener(a -> {
-            float v = (float) a.getAnimatedValue();
-            tvPercent.setText(String.format(Locale.getDefault(), "%.1f%%", v));
-        });
-        anim.start();
+        ValueAnimator a = ValueAnimator.ofFloat(0f, target);
+        a.setDuration(800);
+        a.addUpdateListener(anim -> tvPercent.setText(String.format(Locale.getDefault(), "%.1f%%", (float)anim.getAnimatedValue())));
+        a.start();
     }
     private void showGoalPicker() {
-        String[] options = {"75%", "80%", "85%", "90%", "95%"};
-        new AlertDialog.Builder(this)
-            .setTitle("Set Attendance Goal")
+        String[] options = {"70%", "75%", "80%", "85%", "90%", "95%"};
+        new AlertDialog.Builder(this).setTitle("Set Attendance Goal")
             .setItems(options, (d, which) -> {
-                int[] vals = {75, 80, 85, 90, 95};
+                int[] vals = {70, 75, 80, 85, 90, 95};
                 Prefs.setGoal(this, vals[which]);
                 loadDashboard();
             }).show();

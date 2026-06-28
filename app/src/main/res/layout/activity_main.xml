@@ -6,8 +6,7 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:background="#1A56DB" android:padding="20dp" android:orientation="vertical">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Attendance Tracker" android:textSize="20sp" android:textStyle="bold"
-            android:textColor="#FFFFFF"/>
+            android:text="Attendance Tracker" android:textSize="20sp" android:textStyle="bold" android:textColor="#FFFFFF"/>
         <TextView android:id="@+id/tvDate" android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:textSize="12sp" android:textColor="#BFDBFE"/>
     </LinearLayout>
@@ -20,11 +19,10 @@
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical" android:padding="24dp" android:gravity="center">
                     <TextView android:id="@+id/tvPercent" android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:text="0%" android:textSize="72sp"
-                        android:textStyle="bold" android:textColor="#1A56DB"/>
+                        android:layout_height="wrap_content" android:text="0%"
+                        android:textSize="72sp" android:textStyle="bold" android:textColor="#1A56DB"/>
                     <TextView android:id="@+id/tvGoal" android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:textSize="13sp"
-                        android:textColor="#1A56DB" android:padding="4dp"/>
+                        android:layout_height="wrap_content" android:textSize="13sp" android:textColor="#1A56DB" android:padding="4dp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
             <androidx.cardview.widget.CardView android:id="@+id/cardStatus"
@@ -84,18 +82,28 @@
                         android:textColor="#1E40AF" android:layout_marginTop="4dp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+            <TextView android:id="@+id/tvDev" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:textSize="10sp"
+                android:textColor="#94A3B8" android:layout_gravity="center" android:gravity="center"
+                android:layout_marginTop="8dp"/>
         </LinearLayout>
     </ScrollView>
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal" android:padding="12dp" android:background="#FFFFFF">
+        android:orientation="horizontal" android:padding="8dp" android:background="#FFFFFF">
         <Button android:id="@+id/btnMark" android:layout_width="0dp"
-            android:layout_height="48dp" android:layout_weight="1"
-            android:text="Mark" android:backgroundTint="#1A56DB" android:layout_marginEnd="6dp"/>
+            android:layout_height="44dp" android:layout_weight="1"
+            android:text="Mark" android:backgroundTint="#1A56DB" android:layout_margin="4dp"/>
         <Button android:id="@+id/btnStats" android:layout_width="0dp"
-            android:layout_height="48dp" android:layout_weight="1"
-            android:text="Stats" android:backgroundTint="#475569" android:layout_marginEnd="6dp"/>
+            android:layout_height="44dp" android:layout_weight="1"
+            android:text="Stats" android:backgroundTint="#475569" android:layout_margin="4dp"/>
+        <Button android:id="@+id/btnCalendar" android:layout_width="0dp"
+            android:layout_height="44dp" android:layout_weight="1"
+            android:text="Calendar" android:backgroundTint="#7C3AED" android:layout_margin="4dp"/>
         <Button android:id="@+id/btnSetup" android:layout_width="0dp"
-            android:layout_height="48dp" android:layout_weight="1"
-            android:text="Setup" android:backgroundTint="#64748B"/>
+            android:layout_height="44dp" android:layout_weight="1"
+            android:text="Setup" android:backgroundTint="#64748B" android:layout_margin="4dp"/>
+        <Button android:id="@+id/btnSwitch" android:layout_width="0dp"
+            android:layout_height="44dp" android:layout_weight="1"
+            android:text="Switch" android:backgroundTint="#0F172A" android:layout_margin="4dp"/>
     </LinearLayout>
 </LinearLayout>

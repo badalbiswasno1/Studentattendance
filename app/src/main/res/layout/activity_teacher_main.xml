@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="#F1F5F9">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:background="#7C3AED" android:padding="24dp" android:orientation="vertical">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Teacher Dashboard" android:textSize="22sp"
+            android:textStyle="bold" android:textColor="#FFFFFF"/>
+        <TextView android:id="@+id/tvTeacherName" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:textSize="13sp" android:textColor="#EDE9FE"/>
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+        android:orientation="vertical" android:padding="20dp" android:gravity="center">
+        <Button android:id="@+id/btnMarkAttendance" android:layout_width="match_parent"
+            android:layout_height="56dp" android:text="Mark Class Attendance"
+            android:textSize="16sp" android:backgroundTint="#1A56DB" android:layout_marginBottom="12dp"/>
+        <Button android:id="@+id/btnStudentList" android:layout_width="match_parent"
+            android:layout_height="56dp" android:text="Student List & Details"
+            android:textSize="16sp" android:backgroundTint="#0F172A" android:layout_marginBottom="12dp"/>
+        <Button android:id="@+id/btnExamMarks" android:layout_width="match_parent"
+            android:layout_height="56dp" android:text="All Exam Marks"
+            android:textSize="16sp" android:backgroundTint="#15803D" android:layout_marginBottom="32dp"/>
+        <Button android:id="@+id/btnSwitchProfile" android:layout_width="match_parent"
+            android:layout_height="44dp" android:text="Switch Profile"
+            android:textSize="14sp" android:backgroundTint="#64748B" android:layout_marginBottom="16dp"/>
+        <TextView android:id="@+id/tvDev" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:textSize="11sp"
+            android:textColor="#94A3B8" android:gravity="center"/>
+    </LinearLayout>
+</LinearLayout>

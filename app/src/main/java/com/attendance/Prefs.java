@@ -3,11 +3,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 public class Prefs {
     private static final String FILE = "attendance_prefs";
-    private static final String KEY_GOAL = "attendance_goal";
-    public static void setGoal(Context ctx, int goal) {
-        ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE).edit().putInt(KEY_GOAL, goal).apply();
-    }
-    public static int getGoal(Context ctx) {
-        return ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE).getInt(KEY_GOAL, 75);
-    }
+    public static void setGoal(Context c, int g) { sp(c).edit().putInt("goal", g).apply(); }
+    public static int getGoal(Context c) { return sp(c).getInt("goal", 75); }
+    public static void setActiveProfile(Context c, int id) { sp(c).edit().putInt("active_profile", id).apply(); }
+    public static int getActiveProfile(Context c) { return sp(c).getInt("active_profile", -1); }
+    public static void setMode(Context c, String mode) { sp(c).edit().putString("mode", mode).apply(); }
+    public static String getMode(Context c) { return sp(c).getString("mode", "student"); }
+    private static SharedPreferences sp(Context c) { return c.getSharedPreferences(FILE, Context.MODE_PRIVATE); }
 }
