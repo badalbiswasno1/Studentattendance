@@ -16,7 +16,7 @@
             android:layout_height="56dp" android:text="Mark Class Attendance"
             android:textSize="16sp" android:backgroundTint="#1A56DB" android:layout_marginBottom="12dp"/>
         <Button android:id="@+id/btnStudentList" android:layout_width="match_parent"
-            android:layout_height="56dp" android:text="Student List & Details"
+            android:layout_height="56dp" android:text="Student List and Details"
             android:textSize="16sp" android:backgroundTint="#0F172A" android:layout_marginBottom="12dp"/>
         <Button android:id="@+id/btnExamMarks" android:layout_width="match_parent"
             android:layout_height="56dp" android:text="All Exam Marks"
