@@ -9,6 +9,8 @@ public class Student {
     public String rollNumber;
     public String name;
     public String phone;
+    public String guardianPhone;
+    public String address;
     public boolean isActive;
     public Student(int profileId, String rollNumber, String name, String phone) {
         this.profileId = profileId;

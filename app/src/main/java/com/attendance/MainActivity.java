@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
                 }).show();
         });
         findViewById(R.id.btnSwitch).setOnClickListener(v -> {
+        findViewById(R.id.btnExamTracker).setOnClickListener(v -> startActivity(new Intent(this, ExamTrackerActivity.class)));
+        findViewById(R.id.btnTimetable).setOnClickListener(v -> startActivity(new Intent(this, TimetableActivity.class)));
             startActivity(new Intent(this, ProfileSelectActivity.class));
             finish();
         });
@@ -123,3 +125,4 @@ public class MainActivity extends AppCompatActivity {
         return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
     }
 }
+// This will be added via sed below

@@ -28,6 +28,10 @@
         <activity android:name=".StudentDetailActivity" android:exported="false"/>
         <activity android:name=".ExamMarksActivity" android:exported="false"/>
         <activity android:name=".SettingsActivity" android:exported="false"/>
+        <activity android:name=".DefaulterListActivity" android:exported="false"/>
+        <activity android:name=".ExamTrackerActivity" android:exported="false"/>
+        <activity android:name=".TimetableActivity" android:exported="false"/>
+        <activity android:name=".PrivacyPolicyActivity" android:exported="false"/>
         <receiver android:name=".notification.ReminderReceiver" android:exported="false"/>
     </application>
 </manifest>

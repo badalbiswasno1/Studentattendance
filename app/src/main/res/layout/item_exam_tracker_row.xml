@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical" android:background="#FFFFFF"
+    android:padding="16dp" android:layout_marginBottom="10dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical">
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView android:id="@+id/tvExamName" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:textSize="16sp"
+                android:textStyle="bold" android:textColor="#0F172A"/>
+            <TextView android:id="@+id/tvSubject" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:textSize="13sp" android:textColor="#475569"/>
+            <TextView android:id="@+id/tvDate" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:textSize="12sp" android:textColor="#64748B"/>
+            <TextView android:id="@+id/tvNotes" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:textSize="12sp"
+                android:textColor="#64748B" android:fontFamily="monospace"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/tvDaysLeft" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:textSize="14sp"
+                android:textStyle="bold" android:layout_marginBottom="6dp"/>
+            <Button android:id="@+id/btnDelete" android:layout_width="wrap_content"
+                android:layout_height="32dp" android:text="Del"
+                android:textSize="11sp" android:backgroundTint="#DC2626"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical" android:padding="16dp">
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Day" android:textColor="#0F172A" android:layout_marginBottom="4dp"/>
+    <Spinner android:id="@+id/spinDay" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:layout_marginBottom="12dp"/>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Period Number" android:textColor="#0F172A" android:layout_marginBottom="4dp"/>
+    <Spinner android:id="@+id/spinSlot" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:layout_marginBottom="12dp"/>
+    <EditText android:id="@+id/etSubject" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:hint="Subject Name" android:textColor="#0F172A"/>
+</LinearLayout>

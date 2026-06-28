@@ -85,10 +85,21 @@
                         android:textColor="#1E40AF" android:layout_marginTop="4dp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="12dp">
+                <Button android:id="@+id/btnExamTracker" android:layout_width="0dp"
+                    android:layout_height="44dp" android:layout_weight="1"
+                    android:text="Exam Tracker" android:textSize="12sp"
+                    android:backgroundTint="#7C3AED" android:layout_marginEnd="6dp"/>
+                <Button android:id="@+id/btnTimetable" android:layout_width="0dp"
+                    android:layout_height="44dp" android:layout_weight="1"
+                    android:text="Timetable" android:textSize="12sp"
+                    android:backgroundTint="#0F172A"/>
+            </LinearLayout>
             <TextView android:id="@+id/tvDev" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="10sp"
                 android:textColor="#94A3B8" android:layout_gravity="center"
-                android:gravity="center" android:layout_marginTop="8dp"/>
+                android:gravity="center" android:layout_marginTop="4dp"/>
         </LinearLayout>
     </ScrollView>
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
