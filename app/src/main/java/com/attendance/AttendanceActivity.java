@@ -2,30 +2,29 @@ package com.attendance;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import com.attendance.db.AppDatabase;
 import com.attendance.db.AttendanceDao;
+import com.attendance.db.DailyNoteDao;
 import com.attendance.db.SubjectDao;
 import com.attendance.model.AttendanceRecord;
+import com.attendance.model.DailyNote;
 import com.attendance.model.Subject;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 public class AttendanceActivity extends AppCompatActivity {
     private AppDatabase db;
     private AttendanceDao attendanceDao;
     private SubjectDao subjectDao;
+    private DailyNoteDao noteDao;
     private String selectedDate;
     private TextView tvDate, tvLocked;
     private LinearLayout llSubjects;
     private Button btnDatePicker, btnSave;
+    private EditText etNote;
+    private int profileId;
     private static final int STATE_ABSENT = 0;
     private static final int STATE_PRESENT = 1;
     private static final int STATE_CANCELLED = 2;
@@ -36,11 +35,14 @@ public class AttendanceActivity extends AppCompatActivity {
         db = AppDatabase.getInstance(this);
         attendanceDao = db.attendanceDao();
         subjectDao = db.subjectDao();
+        noteDao = db.dailyNoteDao();
+        profileId = Prefs.getActiveProfile(this);
         tvDate = findViewById(R.id.tvSelectedDate);
         tvLocked = findViewById(R.id.tvLocked);
         llSubjects = findViewById(R.id.llSubjects);
         btnDatePicker = findViewById(R.id.btnDatePicker);
         btnSave = findViewById(R.id.btnSave);
+        etNote = findViewById(R.id.etNote);
         selectedDate = getIntent().getStringExtra("date");
         if (selectedDate == null) selectedDate = MainActivity.getTodayString();
         btnDatePicker.setOnClickListener(v -> showDatePicker());
@@ -50,7 +52,7 @@ public class AttendanceActivity extends AppCompatActivity {
     private void showDatePicker() {
         Calendar cal = Calendar.getInstance();
         new DatePickerDialog(this, (v, y, m, d) -> {
-            selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", y, m + 1, d);
+            selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", y, m+1, d);
             loadSubjects();
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
     }
@@ -68,6 +70,10 @@ public class AttendanceActivity extends AppCompatActivity {
         tvLocked.setVisibility(locked ? View.VISIBLE : View.GONE);
         if (locked) tvLocked.setText("Locked: older than 2 days");
         btnSave.setEnabled(!locked);
+        etNote.setEnabled(!locked);
+        DailyNote existingNote = noteDao.getByDate(profileId, selectedDate);
+        if (existingNote != null) etNote.setText(existingNote.note);
+        else etNote.setText("");
         List<Subject> subjects = subjectDao.getAllActive();
         if (subjects.isEmpty()) {
             TextView t = new TextView(this);
@@ -84,12 +90,12 @@ public class AttendanceActivity extends AppCompatActivity {
                 else if (rec.present) state = STATE_PRESENT;
             }
             View card = getLayoutInflater().inflate(R.layout.item_subject_card, llSubjects, false);
-            TextView tvName = card.findViewById(R.id.tvSubjectName);
+            TextView tvName   = card.findViewById(R.id.tvSubjectName);
             TextView tvStatus = card.findViewById(R.id.tvStatus);
-            View indicator = card.findViewById(R.id.viewIndicator);
+            View indicator    = card.findViewById(R.id.viewIndicator);
             Button btnPresent = card.findViewById(R.id.btnPresent);
-            Button btnAbsent = card.findViewById(R.id.btnAbsent);
-            Button btnCancel = card.findViewById(R.id.btnCancel);
+            Button btnAbsent  = card.findViewById(R.id.btnAbsent);
+            Button btnCancel  = card.findViewById(R.id.btnCancel);
             tvName.setText(subject.getDisplayName());
             final int[] curState = {state};
             updateCardState(tvStatus, indicator, (CardView) card, curState[0]);
@@ -135,14 +141,18 @@ public class AttendanceActivity extends AppCompatActivity {
             Subject subject = subjects.get(i);
             AttendanceRecord existing = attendanceDao.getRecord(selectedDate, subject.id);
             boolean present = state == STATE_PRESENT;
-            boolean canceled = state == STATE_CANCELLED;
+            boolean cancelled = state == STATE_CANCELLED;
             if (existing != null) {
                 existing.present = present;
-                existing.cancelled = canceled;
+                existing.cancelled = cancelled;
                 attendanceDao.update(existing);
             } else {
-                attendanceDao.insert(new AttendanceRecord(selectedDate, subject.id, present, canceled));
+                attendanceDao.insert(new AttendanceRecord(selectedDate, subject.id, present, cancelled));
             }
+        }
+        String noteText = etNote.getText().toString().trim();
+        if (!noteText.isEmpty()) {
+            noteDao.insert(new DailyNote(profileId, selectedDate, noteText));
         }
         Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
         finish();

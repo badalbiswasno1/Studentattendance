@@ -2,7 +2,7 @@ package com.attendance;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
+import android.view.*;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,10 +43,9 @@ public class StudentListActivity extends AppCompatActivity {
             int present = sadao.countPresent(s.id);
             int total = sadao.countTotal(s.id);
             float pct = total > 0 ? present * 100f / total : 0;
-            String pctText = String.format(java.util.Locale.getDefault(), "%.0f%%", pct);
-            ((TextView)row.findViewById(R.id.tvPct)).setText(pctText);
-            int color = pct >= 75 ? 0xFF15803D : pct >= 60 ? 0xFFD97706 : 0xFFDC2626;
-            ((TextView)row.findViewById(R.id.tvPct)).setTextColor(color);
+            TextView tvPct = row.findViewById(R.id.tvPct);
+            tvPct.setText(String.format(java.util.Locale.getDefault(), "%.0f%% (%d/%d)", pct, present, total));
+            tvPct.setTextColor(pct >= 75 ? 0xFF15803D : pct >= 60 ? 0xFFD97706 : 0xFFDC2626);
             row.setOnClickListener(v -> {
                 Intent i = new Intent(this, StudentDetailActivity.class);
                 i.putExtra("studentId", s.id);
@@ -64,18 +63,22 @@ public class StudentListActivity extends AppCompatActivity {
     }
     private void showAddStudent() {
         View v = getLayoutInflater().inflate(R.layout.dialog_add_student, null);
-        EditText etRoll = v.findViewById(R.id.etRoll);
-        EditText etName = v.findViewById(R.id.etName);
-        EditText etPhone = v.findViewById(R.id.etPhone);
+        EditText etRoll     = v.findViewById(R.id.etRoll);
+        EditText etName     = v.findViewById(R.id.etName);
+        EditText etPhone    = v.findViewById(R.id.etPhone);
+        EditText etGuardian = v.findViewById(R.id.etGuardian);
+        EditText etAddress  = v.findViewById(R.id.etAddress);
         new AlertDialog.Builder(this).setTitle("Add Student").setView(v)
             .setPositiveButton("Add", (d,w) -> {
                 String roll = etRoll.getText().toString().trim();
                 String name = etName.getText().toString().trim();
-                String phone = etPhone.getText().toString().trim();
                 if (TextUtils.isEmpty(roll) || TextUtils.isEmpty(name)) {
-                    Toast.makeText(this,"Roll & Name required",Toast.LENGTH_SHORT).show(); return;
+                    Toast.makeText(this,"Roll and Name required",Toast.LENGTH_SHORT).show(); return;
                 }
-                db.studentDao().insert(new Student(profileId, roll, name, phone));
+                Student student = new Student(profileId, roll, name, etPhone.getText().toString().trim());
+                student.guardianPhone = etGuardian.getText().toString().trim();
+                student.address = etAddress.getText().toString().trim();
+                db.studentDao().insert(student);
                 loadStudents();
             }).setNegativeButton("Cancel", null).show();
     }

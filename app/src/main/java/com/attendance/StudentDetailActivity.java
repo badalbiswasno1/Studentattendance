@@ -26,16 +26,22 @@ public class StudentDetailActivity extends AppCompatActivity {
         if (s == null) { finish(); return; }
         ((TextView)findViewById(R.id.tvName)).setText(s.name);
         ((TextView)findViewById(R.id.tvRoll)).setText("Roll: " + s.rollNumber);
-        if (s.phone != null && !s.phone.isEmpty())
-            ((TextView)findViewById(R.id.tvPhone)).setText("Phone: " + s.phone);
+        TextView tvPhone = findViewById(R.id.tvPhone);
+        if (s.phone != null && !s.phone.isEmpty()) tvPhone.setText("Phone: " + s.phone);
+        else tvPhone.setVisibility(View.GONE);
+        TextView tvGuardian = findViewById(R.id.tvGuardian);
+        if (s.guardianPhone != null && !s.guardianPhone.isEmpty()) tvGuardian.setText("Guardian: " + s.guardianPhone);
+        else tvGuardian.setVisibility(View.GONE);
+        TextView tvAddress = findViewById(R.id.tvAddress);
+        if (s.address != null && !s.address.isEmpty()) tvAddress.setText("Address: " + s.address);
+        else tvAddress.setVisibility(View.GONE);
         StudentAttendanceDao sadao = db.studentAttendanceDao();
         int present = sadao.countPresent(studentId);
         int total = sadao.countTotal(studentId);
         float pct = total > 0 ? present * 100f / total : 0;
-        ((TextView)findViewById(R.id.tvAttendance)).setText(
-            String.format(Locale.getDefault(), "Attendance: %.1f%% (%d/%d)", pct, present, total));
-        int color = pct >= 75 ? 0xFF15803D : pct >= 60 ? 0xFFD97706 : 0xFFDC2626;
-        ((TextView)findViewById(R.id.tvAttendance)).setTextColor(color);
+        TextView tvAtt = findViewById(R.id.tvAttendance);
+        tvAtt.setText(String.format(Locale.getDefault(), "Attendance: %.1f%% (%d/%d)", pct, present, total));
+        tvAtt.setTextColor(pct >= 75 ? 0xFF15803D : pct >= 60 ? 0xFFD97706 : 0xFFDC2626);
         llMarks = findViewById(R.id.llMarks);
         findViewById(R.id.btnAddMark).setOnClickListener(v -> showAddMark());
         loadMarks();
@@ -54,10 +60,9 @@ public class StudentDetailActivity extends AppCompatActivity {
             ((TextView)row.findViewById(R.id.tvExam)).setText(m.examName + " - " + m.subjectName);
             float pct = m.totalMarks > 0 ? m.marksObtained * 100f / m.totalMarks : 0;
             String label = pct >= 75 ? "Bright" : pct >= 50 ? "Average" : "Needs Improvement";
-            ((TextView)row.findViewById(R.id.tvMarks)).setText(
-                String.format(Locale.getDefault(), "%.0f / %.0f (%.0f%%) — %s", m.marksObtained, m.totalMarks, pct, label));
-            int color = pct >= 75 ? 0xFF15803D : pct >= 50 ? 0xFFD97706 : 0xFFDC2626;
-            ((TextView)row.findViewById(R.id.tvMarks)).setTextColor(color);
+            TextView tvMarks = row.findViewById(R.id.tvMarks);
+            tvMarks.setText(String.format(Locale.getDefault(), "%.0f / %.0f (%.0f%%) - %s", m.marksObtained, m.totalMarks, pct, label));
+            tvMarks.setTextColor(pct >= 75 ? 0xFF15803D : pct >= 50 ? 0xFFD97706 : 0xFFDC2626);
             row.findViewById(R.id.btnDeleteMark).setOnClickListener(v -> {
                 db.examMarkDao().deleteById(m.id);
                 loadMarks();
@@ -67,17 +72,17 @@ public class StudentDetailActivity extends AppCompatActivity {
     }
     private void showAddMark() {
         View v = getLayoutInflater().inflate(R.layout.dialog_add_mark, null);
-        EditText etExam = v.findViewById(R.id.etExam);
-        EditText etSubject = v.findViewById(R.id.etSubject);
+        EditText etExam     = v.findViewById(R.id.etExam);
+        EditText etSubject  = v.findViewById(R.id.etSubject);
         EditText etObtained = v.findViewById(R.id.etObtained);
-        EditText etTotal = v.findViewById(R.id.etTotal);
+        EditText etTotal    = v.findViewById(R.id.etTotal);
         new AlertDialog.Builder(this).setTitle("Add Exam Mark").setView(v)
             .setPositiveButton("Save", (d,w) -> {
                 try {
-                    String exam = etExam.getText().toString().trim();
+                    String exam    = etExam.getText().toString().trim();
                     String subject = etSubject.getText().toString().trim();
                     float obtained = Float.parseFloat(etObtained.getText().toString().trim());
-                    float total = Float.parseFloat(etTotal.getText().toString().trim());
+                    float total    = Float.parseFloat(etTotal.getText().toString().trim());
                     db.examMarkDao().insert(new ExamMark(studentId, profileId, subject, obtained, total, exam, MainActivity.getTodayString()));
                     loadMarks();
                 } catch (Exception e) { Toast.makeText(this,"Invalid input",Toast.LENGTH_SHORT).show(); }
