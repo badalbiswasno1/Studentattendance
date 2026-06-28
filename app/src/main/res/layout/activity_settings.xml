@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="#F1F5F9">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:background="#1A56DB" android:padding="20dp">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Settings" android:textSize="20sp"
+            android:textStyle="bold" android:textColor="#FFFFFF"/>
+    </LinearLayout>
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="16dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="NOTIFICATIONS" android:textSize="11sp"
+                android:textColor="#64748B" android:textStyle="bold"
+                android:layout_marginBottom="8dp" android:layout_marginTop="8dp"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:background="#FFFFFF"
+                android:padding="16dp" android:gravity="center_vertical" android:layout_marginBottom="8dp">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Daily Reminder"
+                    android:textSize="15sp" android:textColor="#0F172A"/>
+                <Switch android:id="@+id/swNotification" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <Button android:id="@+id/btnSetTime" android:layout_width="match_parent"
+                android:layout_height="48dp" android:text="Set Reminder Time"
+                android:backgroundTint="#475569" android:layout_marginBottom="16dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="REPORTS" android:textSize="11sp"
+                android:textColor="#64748B" android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+            <Button android:id="@+id/btnExportPdf" android:layout_width="match_parent"
+                android:layout_height="48dp" android:text="Export This Month as PDF"
+                android:backgroundTint="#15803D" android:layout_marginBottom="8dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="DATA" android:textSize="11sp"
+                android:textColor="#64748B" android:textStyle="bold"
+                android:layout_marginBottom="8dp" android:layout_marginTop="8dp"/>
+            <Button android:id="@+id/btnBackup" android:layout_width="match_parent"
+                android:layout_height="48dp" android:text="About Data Backup"
+                android:backgroundTint="#64748B" android:layout_marginBottom="24dp"/>
+            <TextView android:id="@+id/tvDev" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:textSize="11sp"
+                android:textColor="#94A3B8" android:gravity="center"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

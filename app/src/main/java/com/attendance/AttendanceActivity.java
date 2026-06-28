@@ -28,7 +28,7 @@ public class AttendanceActivity extends AppCompatActivity {
     private Button btnDatePicker, btnSave;
     private static final int STATE_ABSENT = 0;
     private static final int STATE_PRESENT = 1;
-    private static final int STATE_CANCELLED = 2;
+    private static final int STATE_CANCELED = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +80,7 @@ public class AttendanceActivity extends AppCompatActivity {
             AttendanceRecord rec = attendanceDao.getRecord(selectedDate, subject.id);
             int state = STATE_ABSENT;
             if (rec != null) {
-                if (rec.cancelled) state = STATE_CANCELLED;
+                if (rec.canceled) state = STATE_CANCELED;
                 else if (rec.present) state = STATE_PRESENT;
             }
             View card = getLayoutInflater().inflate(R.layout.item_subject_card, llSubjects, false);
@@ -96,7 +96,7 @@ public class AttendanceActivity extends AppCompatActivity {
             if (!locked) {
                 btnPresent.setOnClickListener(v -> { curState[0] = STATE_PRESENT; updateCardState(tvStatus, indicator, (CardView) card, curState[0]); card.setTag(curState[0]); });
                 btnAbsent.setOnClickListener(v -> { curState[0] = STATE_ABSENT; updateCardState(tvStatus, indicator, (CardView) card, curState[0]); card.setTag(curState[0]); });
-                btnCancel.setOnClickListener(v -> { curState[0] = STATE_CANCELLED; updateCardState(tvStatus, indicator, (CardView) card, curState[0]); card.setTag(curState[0]); });
+                btnCancel.setOnClickListener(v -> { curState[0] = STATE_CANCELED; updateCardState(tvStatus, indicator, (CardView) card, curState[0]); card.setTag(curState[0]); });
             } else {
                 btnPresent.setEnabled(false); btnAbsent.setEnabled(false); btnCancel.setEnabled(false);
             }
@@ -112,8 +112,8 @@ public class AttendanceActivity extends AppCompatActivity {
                 indicator.setBackgroundColor(0xFF15803D);
                 card.setCardBackgroundColor(0xFFDCFCE7);
                 break;
-            case STATE_CANCELLED:
-                tvStatus.setText("Cancelled");
+            case STATE_CANCELED:
+                tvStatus.setText("Canceled");
                 tvStatus.setTextColor(0xFF92400E);
                 indicator.setBackgroundColor(0xFFF59E0B);
                 card.setCardBackgroundColor(0xFFFEF3C7);
@@ -135,13 +135,13 @@ public class AttendanceActivity extends AppCompatActivity {
             Subject subject = subjects.get(i);
             AttendanceRecord existing = attendanceDao.getRecord(selectedDate, subject.id);
             boolean present = state == STATE_PRESENT;
-            boolean cancelled = state == STATE_CANCELLED;
+            boolean canceled = state == STATE_CANCELED;
             if (existing != null) {
                 existing.present = present;
-                existing.cancelled = cancelled;
+                existing.canceled = canceled;
                 attendanceDao.update(existing);
             } else {
-                attendanceDao.insert(new AttendanceRecord(selectedDate, subject.id, present, cancelled));
+                attendanceDao.insert(new AttendanceRecord(selectedDate, subject.id, present, canceled));
             }
         }
         Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
