@@ -23,9 +23,12 @@ public class AttendanceActivity extends AppCompatActivity {
     private AttendanceDao attendanceDao;
     private SubjectDao subjectDao;
     private String selectedDate;
-    private TextView tvSelectedDate, tvLocked;
+    private TextView tvDate, tvLocked;
     private LinearLayout llSubjects;
     private Button btnDatePicker, btnSave;
+    private static final int STATE_ABSENT = 0;
+    private static final int STATE_PRESENT = 1;
+    private static final int STATE_CANCELLED = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +36,7 @@ public class AttendanceActivity extends AppCompatActivity {
         db = AppDatabase.getInstance(this);
         attendanceDao = db.attendanceDao();
         subjectDao = db.subjectDao();
-        tvSelectedDate = findViewById(R.id.tvSelectedDate);
+        tvDate = findViewById(R.id.tvSelectedDate);
         tvLocked = findViewById(R.id.tvLocked);
         llSubjects = findViewById(R.id.llSubjects);
         btnDatePicker = findViewById(R.id.btnDatePicker);
@@ -42,93 +45,103 @@ public class AttendanceActivity extends AppCompatActivity {
         if (selectedDate == null) selectedDate = MainActivity.getTodayString();
         btnDatePicker.setOnClickListener(v -> showDatePicker());
         btnSave.setOnClickListener(v -> saveAttendance());
-        loadSubjectsForDate();
+        loadSubjects();
     }
     private void showDatePicker() {
         Calendar cal = Calendar.getInstance();
-        new DatePickerDialog(this, (view, year, month, day) -> {
-            selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, day);
-            loadSubjectsForDate();
+        new DatePickerDialog(this, (v, y, m, d) -> {
+            selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", y, m + 1, d);
+            loadSubjects();
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
     }
     private boolean isLocked(String date) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            Date d = sdf.parse(date);
-            Date today = sdf.parse(MainActivity.getTodayString());
-            long diffDays = (today.getTime() - d.getTime()) / (1000 * 60 * 60 * 24);
-            return diffDays > 2;
-        } catch (Exception e) {
-            return false;
-        }
+            long diff = sdf.parse(MainActivity.getTodayString()).getTime() - sdf.parse(date).getTime();
+            return diff / 86400000 > 2;
+        } catch (Exception e) { return false; }
     }
-    private void loadSubjectsForDate() {
-        tvSelectedDate.setText("Date: " + selectedDate);
+    private void loadSubjects() {
+        tvDate.setText("Date: " + selectedDate);
         llSubjects.removeAllViews();
         boolean locked = isLocked(selectedDate);
-        if (locked) {
-            tvLocked.setVisibility(View.VISIBLE);
-            tvLocked.setText("Locked: older than 2 days");
-            btnSave.setEnabled(false);
-        } else {
-            tvLocked.setVisibility(View.GONE);
-            btnSave.setEnabled(true);
-        }
+        tvLocked.setVisibility(locked ? View.VISIBLE : View.GONE);
+        if (locked) tvLocked.setText("Locked: older than 2 days");
+        btnSave.setEnabled(!locked);
         List<Subject> subjects = subjectDao.getAllActive();
         if (subjects.isEmpty()) {
-            TextView empty = new TextView(this);
-            empty.setText("No subjects. Go to Setup first.");
-            empty.setPadding(32, 32, 32, 32);
-            llSubjects.addView(empty);
+            TextView t = new TextView(this);
+            t.setText("No subjects. Go to Setup.");
+            t.setPadding(32, 32, 32, 32);
+            llSubjects.addView(t);
             return;
         }
         for (Subject subject : subjects) {
-            AttendanceRecord record = attendanceDao.getRecord(selectedDate, subject.id);
-            boolean isPresent = record != null && record.present;
-            CardView card = (CardView) getLayoutInflater().inflate(R.layout.item_subject_card, llSubjects, false);
+            AttendanceRecord rec = attendanceDao.getRecord(selectedDate, subject.id);
+            int state = STATE_ABSENT;
+            if (rec != null) {
+                if (rec.cancelled) state = STATE_CANCELLED;
+                else if (rec.present) state = STATE_PRESENT;
+            }
+            View card = getLayoutInflater().inflate(R.layout.item_subject_card, llSubjects, false);
             TextView tvName = card.findViewById(R.id.tvSubjectName);
             TextView tvStatus = card.findViewById(R.id.tvStatus);
             View indicator = card.findViewById(R.id.viewIndicator);
-            tvName.setText(subject.name);
-            updateCardUI(tvStatus, indicator, card, isPresent);
+            Button btnPresent = card.findViewById(R.id.btnPresent);
+            Button btnAbsent = card.findViewById(R.id.btnAbsent);
+            Button btnCancel = card.findViewById(R.id.btnCancel);
+            tvName.setText(subject.getDisplayName());
+            final int[] curState = {state};
+            updateCardState(tvStatus, indicator, (CardView) card, curState[0]);
             if (!locked) {
-                final boolean[] cur = {isPresent};
-                card.setOnClickListener(v -> {
-                    cur[0] = !cur[0];
-                    updateCardUI(tvStatus, indicator, card, cur[0]);
-                    card.setTag(cur[0]);
-                });
+                btnPresent.setOnClickListener(v -> { curState[0] = STATE_PRESENT; updateCardState(tvStatus, indicator, (CardView) card, curState[0]); card.setTag(curState[0]); });
+                btnAbsent.setOnClickListener(v -> { curState[0] = STATE_ABSENT; updateCardState(tvStatus, indicator, (CardView) card, curState[0]); card.setTag(curState[0]); });
+                btnCancel.setOnClickListener(v -> { curState[0] = STATE_CANCELLED; updateCardState(tvStatus, indicator, (CardView) card, curState[0]); card.setTag(curState[0]); });
+            } else {
+                btnPresent.setEnabled(false); btnAbsent.setEnabled(false); btnCancel.setEnabled(false);
             }
-            card.setTag(isPresent);
+            card.setTag(curState[0]);
             llSubjects.addView(card);
         }
     }
-    private void updateCardUI(TextView tvStatus, View indicator, CardView card, boolean present) {
-        if (present) {
-            tvStatus.setText("Present");
-            tvStatus.setTextColor(getResources().getColor(R.color.green, null));
-            indicator.setBackgroundColor(getResources().getColor(R.color.green, null));
-            card.setCardBackgroundColor(getResources().getColor(R.color.greenLight, null));
-        } else {
-            tvStatus.setText("Absent");
-            tvStatus.setTextColor(getResources().getColor(R.color.red, null));
-            indicator.setBackgroundColor(getResources().getColor(R.color.red, null));
-            card.setCardBackgroundColor(getResources().getColor(R.color.redLight, null));
+    private void updateCardState(TextView tvStatus, View indicator, CardView card, int state) {
+        switch (state) {
+            case STATE_PRESENT:
+                tvStatus.setText("Present");
+                tvStatus.setTextColor(0xFF15803D);
+                indicator.setBackgroundColor(0xFF15803D);
+                card.setCardBackgroundColor(0xFFDCFCE7);
+                break;
+            case STATE_CANCELLED:
+                tvStatus.setText("Cancelled");
+                tvStatus.setTextColor(0xFF92400E);
+                indicator.setBackgroundColor(0xFFF59E0B);
+                card.setCardBackgroundColor(0xFFFEF3C7);
+                break;
+            default:
+                tvStatus.setText("Absent");
+                tvStatus.setTextColor(0xFFB91C1C);
+                indicator.setBackgroundColor(0xFFB91C1C);
+                card.setCardBackgroundColor(0xFFFECACA);
+                break;
         }
     }
     private void saveAttendance() {
         List<Subject> subjects = subjectDao.getAllActive();
         for (int i = 0; i < llSubjects.getChildCount() && i < subjects.size(); i++) {
-            CardView card = (CardView) llSubjects.getChildAt(i);
-            Boolean present = (Boolean) card.getTag();
-            if (present == null) present = false;
+            View card = llSubjects.getChildAt(i);
+            Object tag = card.getTag();
+            int state = tag instanceof Integer ? (Integer) tag : STATE_ABSENT;
             Subject subject = subjects.get(i);
             AttendanceRecord existing = attendanceDao.getRecord(selectedDate, subject.id);
+            boolean present = state == STATE_PRESENT;
+            boolean cancelled = state == STATE_CANCELLED;
             if (existing != null) {
                 existing.present = present;
+                existing.cancelled = cancelled;
                 attendanceDao.update(existing);
             } else {
-                attendanceDao.insert(new AttendanceRecord(selectedDate, subject.id, present));
+                attendanceDao.insert(new AttendanceRecord(selectedDate, subject.id, present, cancelled));
             }
         }
         Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();

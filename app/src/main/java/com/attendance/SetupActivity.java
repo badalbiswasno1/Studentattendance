@@ -18,7 +18,6 @@ public class SetupActivity extends AppCompatActivity {
     private SubjectDao subjectDao;
     private LinearLayout llSubjects;
     private EditText etSubjectName;
-    private Button btnAdd, btnAddGeneric;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,10 +26,8 @@ public class SetupActivity extends AppCompatActivity {
         subjectDao = db.subjectDao();
         llSubjects = findViewById(R.id.llSubjects);
         etSubjectName = findViewById(R.id.etSubjectName);
-        btnAdd = findViewById(R.id.btnAdd);
-        btnAddGeneric = findViewById(R.id.btnAddGeneric);
-        btnAdd.setOnClickListener(v -> addSubject());
-        btnAddGeneric.setOnClickListener(v -> {
+        findViewById(R.id.btnAdd).setOnClickListener(v -> addSubject());
+        findViewById(R.id.btnAddGeneric).setOnClickListener(v -> {
             int count = subjectDao.getActiveCount();
             subjectDao.insert(new Subject("Period " + (count + 1), count));
             loadSubjects();
@@ -39,37 +36,48 @@ public class SetupActivity extends AppCompatActivity {
     }
     private void addSubject() {
         String name = etSubjectName.getText().toString().trim();
-        if (TextUtils.isEmpty(name)) {
-            Toast.makeText(this, "Enter subject name", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        int count = subjectDao.getActiveCount();
-        subjectDao.insert(new Subject(name, count));
+        if (TextUtils.isEmpty(name)) { Toast.makeText(this, "Enter name", Toast.LENGTH_SHORT).show(); return; }
+        subjectDao.insert(new Subject(name, subjectDao.getActiveCount()));
         etSubjectName.setText("");
         loadSubjects();
-        Toast.makeText(this, name + " added", Toast.LENGTH_SHORT).show();
     }
     private void loadSubjects() {
         llSubjects.removeAllViews();
         List<Subject> subjects = subjectDao.getAllActive();
         if (subjects.isEmpty()) {
-            TextView empty = new TextView(this);
-            empty.setText("No subjects yet.");
-            empty.setPadding(32, 24, 32, 24);
-            llSubjects.addView(empty);
+            TextView t = new TextView(this);
+            t.setText("No subjects yet.");
+            t.setPadding(32, 24, 32, 24);
+            t.setTextColor(0xFF0F172A);
+            llSubjects.addView(t);
             return;
         }
         for (int i = 0; i < subjects.size(); i++) {
             Subject subject = subjects.get(i);
             View row = getLayoutInflater().inflate(R.layout.item_subject_setup, llSubjects, false);
-            TextView tvName = row.findViewById(R.id.tvSubjectName);
-            TextView tvOrder = row.findViewById(R.id.tvOrder);
-            Button btnDelete = row.findViewById(R.id.btnDelete);
-            tvName.setText(subject.name);
-            tvOrder.setText("Slot " + (i + 1));
-            btnDelete.setOnClickListener(v -> {
+            ((TextView) row.findViewById(R.id.tvOrder)).setText("Slot " + (i + 1));
+            ((TextView) row.findViewById(R.id.tvSubjectName)).setText(subject.getDisplayName());
+            row.findViewById(R.id.btnEdit).setOnClickListener(v -> {
+                EditText et = new EditText(this);
+                et.setText(subject.getDisplayName());
+                et.setTextColor(0xFF0F172A);
                 new AlertDialog.Builder(this)
-                    .setTitle("Delete " + subject.name + "?")
+                    .setTitle("Edit Subject Name")
+                    .setView(et)
+                    .setPositiveButton("Save", (d, w) -> {
+                        String newName = et.getText().toString().trim();
+                        if (!TextUtils.isEmpty(newName)) {
+                            subject.name = newName;
+                            subject.displayName = newName;
+                            subjectDao.update(subject);
+                            loadSubjects();
+                        }
+                    })
+                    .setNegativeButton("Cancel", null).show();
+            });
+            row.findViewById(R.id.btnDelete).setOnClickListener(v -> {
+                new AlertDialog.Builder(this)
+                    .setTitle("Delete " + subject.getDisplayName() + "?")
                     .setPositiveButton("Delete", (d, w) -> {
                         subject.isActive = false;
                         subjectDao.update(subject);
