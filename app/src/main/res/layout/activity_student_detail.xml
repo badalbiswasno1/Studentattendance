@@ -11,9 +11,13 @@
             android:layout_height="wrap_content" android:textSize="13sp" android:textColor="#EDE9FE"/>
         <TextView android:id="@+id/tvPhone" android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:textSize="13sp" android:textColor="#EDE9FE"/>
+        <TextView android:id="@+id/tvGuardian" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:textSize="13sp" android:textColor="#EDE9FE"/>
+        <TextView android:id="@+id/tvAddress" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:textSize="13sp" android:textColor="#EDE9FE"/>
         <TextView android:id="@+id/tvAttendance" android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:textSize="15sp"
-            android:textStyle="bold" android:layout_marginTop="6dp"/>
+            android:textStyle="bold" android:layout_marginTop="8dp"/>
     </LinearLayout>
     <ScrollView android:layout_width="match_parent" android:layout_height="0dp"
         android:layout_weight="1" android:padding="12dp">
