@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:background="#F1F5F9">
+    android:orientation="vertical" android:background="#F8FAFC">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:background="#7C3AED" android:padding="20dp" android:orientation="vertical">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -19,11 +19,11 @@
                 <androidx.cardview.widget.CardView android:layout_width="0dp"
                     android:layout_height="wrap_content" android:layout_weight="1"
                     android:layout_marginEnd="6dp" app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp" app:cardBackgroundColor="#FFFFFF">
+                    app:cardElevation="2dp" app:cardBackgroundColor="#FFFFFF">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:orientation="vertical" android:padding="16dp" android:gravity="center">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="STUDENTS" android:textSize="10sp" android:textColor="#64748B"/>
+                            android:text="Students" android:textSize="11sp" android:textColor="#64748B"/>
                         <TextView android:id="@+id/tvTotalStudents" android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:text="0"
                             android:textSize="32sp" android:textStyle="bold" android:textColor="#7C3AED"/>
@@ -32,11 +32,11 @@
                 <androidx.cardview.widget.CardView android:layout_width="0dp"
                     android:layout_height="wrap_content" android:layout_weight="1"
                     android:layout_marginStart="6dp" app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp" app:cardBackgroundColor="#FFFFFF">
+                    app:cardElevation="2dp" app:cardBackgroundColor="#FFFFFF">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:orientation="vertical" android:padding="16dp" android:gravity="center">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="TODAY PRESENT" android:textSize="10sp" android:textColor="#64748B"/>
+                            android:text="Today Present" android:textSize="11sp" android:textColor="#64748B"/>
                         <TextView android:id="@+id/tvTodayPresent" android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:text="0"
                             android:textSize="32sp" android:textStyle="bold" android:textColor="#15803D"/>
@@ -48,11 +48,11 @@
                 <androidx.cardview.widget.CardView android:layout_width="0dp"
                     android:layout_height="wrap_content" android:layout_weight="1"
                     android:layout_marginEnd="6dp" app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp" app:cardBackgroundColor="#FFFFFF">
+                    app:cardElevation="2dp" app:cardBackgroundColor="#FFFFFF">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:orientation="vertical" android:padding="16dp" android:gravity="center">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="TODAY ABSENT" android:textSize="10sp" android:textColor="#64748B"/>
+                            android:text="Today Absent" android:textSize="11sp" android:textColor="#64748B"/>
                         <TextView android:id="@+id/tvTodayAbsent" android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:text="0"
                             android:textSize="32sp" android:textStyle="bold" android:textColor="#DC2626"/>
@@ -61,11 +61,11 @@
                 <androidx.cardview.widget.CardView android:layout_width="0dp"
                     android:layout_height="wrap_content" android:layout_weight="1"
                     android:layout_marginStart="6dp" app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp" app:cardBackgroundColor="#FFFFFF">
+                    app:cardElevation="2dp" app:cardBackgroundColor="#FFFFFF">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:orientation="vertical" android:padding="16dp" android:gravity="center">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="TODAY RATE" android:textSize="10sp" android:textColor="#64748B"/>
+                            android:text="Today Rate" android:textSize="11sp" android:textColor="#64748B"/>
                         <TextView android:id="@+id/tvTodayRate" android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:text="0%"
                             android:textSize="28sp" android:textStyle="bold" android:textColor="#1A56DB"/>
@@ -79,18 +79,21 @@
                 android:layout_height="52dp" android:text="Student List and Records"
                 android:textSize="15sp" android:backgroundTint="#0F172A" android:layout_marginBottom="10dp"/>
             <Button android:id="@+id/btnDefaulterList" android:layout_width="match_parent"
-                android:layout_height="52dp" android:text="Low Attendance List (Below 75%)"
+                android:layout_height="52dp" android:text="Low Attendance List"
                 android:textSize="15sp" android:backgroundTint="#DC2626" android:layout_marginBottom="10dp"/>
             <Button android:id="@+id/btnExamMarks" android:layout_width="match_parent"
                 android:layout_height="52dp" android:text="All Exam Marks"
                 android:textSize="15sp" android:backgroundTint="#15803D" android:layout_marginBottom="10dp"/>
+            <Button android:id="@+id/btnExportPdf" android:layout_width="match_parent"
+                android:layout_height="52dp" android:text="Export Class PDF Report"
+                android:textSize="15sp" android:backgroundTint="#7C3AED" android:layout_marginBottom="16dp"/>
             <Button android:id="@+id/btnSwitchProfile" android:layout_width="match_parent"
                 android:layout_height="44dp" android:text="Switch Profile"
                 android:textSize="14sp" android:backgroundTint="#64748B" android:layout_marginBottom="8dp"/>
             <TextView android:id="@+id/tvDev" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="10sp"
-                android:textColor="#94A3B8" android:gravity="center" android:layout_gravity="center"
-                android:layout_marginTop="8dp"/>
+                android:textColor="#94A3B8" android:gravity="center"
+                android:layout_gravity="center" android:layout_marginTop="8dp"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

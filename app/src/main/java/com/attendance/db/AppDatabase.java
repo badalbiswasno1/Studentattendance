@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.attendance.model.*;
-@Database(entities = {Subject.class, AttendanceRecord.class, UserProfile.class, Student.class, StudentAttendance.class, ExamMark.class, ExamTracker.class, DailyNote.class, Timetable.class}, version = 4, exportSchema = false)
+@Database(entities = {Subject.class, AttendanceRecord.class, UserProfile.class, Student.class, StudentAttendance.class, ExamMark.class, ExamTracker.class, DailyNote.class, Timetable.class, Badge.class}, version = 5, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract SubjectDao subjectDao();
     public abstract AttendanceDao attendanceDao();
@@ -17,6 +17,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ExamTrackerDao examTrackerDao();
     public abstract DailyNoteDao dailyNoteDao();
     public abstract TimetableDao timetableDao();
+    public abstract BadgeDao badgeDao();
     private static volatile AppDatabase INSTANCE;
     static final Migration M1_2 = new Migration(1, 2) {
         public void migrate(SupportSQLiteDatabase db) {
@@ -41,12 +42,17 @@ public abstract class AppDatabase extends RoomDatabase {
             db.execSQL("ALTER TABLE students ADD COLUMN address TEXT");
         }
     };
+    static final Migration M4_5 = new Migration(4, 5) {
+        public void migrate(SupportSQLiteDatabase db) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS badges (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, profileId INTEGER NOT NULL, badgeKey TEXT, badgeName TEXT, badgeDesc TEXT, earnedDate TEXT)");
+        }
+    };
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "attendance_db")
-                        .addMigrations(M1_2, M2_3, M3_4).allowMainThreadQueries().build();
+                        .addMigrations(M1_2, M2_3, M3_4, M4_5).allowMainThreadQueries().build();
                 }
             }
         }

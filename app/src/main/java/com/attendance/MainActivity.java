@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import com.attendance.db.AppDatabase;
 import com.attendance.db.AttendanceDao;
+import com.attendance.model.Badge;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -46,12 +47,13 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnCalendar).setOnClickListener(v ->
             startActivity(new Intent(this, CalendarActivity.class)));
         findViewById(R.id.btnSetup).setOnClickListener(v -> {
-            String[] opts = {"Setup Subjects", "Settings", "Privacy Policy"};
-            new AlertDialog.Builder(this)
-                .setTitle("More Options")
+            String[] opts = {"Setup Subjects", "Settings", "My Achievements", "Weekly Chart", "Privacy Policy"};
+            new AlertDialog.Builder(this).setTitle("More")
                 .setItems(opts, (d, which) -> {
                     if (which == 0) startActivity(new Intent(this, SetupActivity.class));
                     else if (which == 1) startActivity(new Intent(this, SettingsActivity.class));
+                    else if (which == 2) startActivity(new Intent(this, BadgesActivity.class));
+                    else if (which == 3) startActivity(new Intent(this, WeeklyStatsActivity.class));
                     else startActivity(new Intent(this, PrivacyPolicyActivity.class));
                 }).show();
         });
@@ -65,7 +67,25 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, TimetableActivity.class)));
     }
     @Override
-    protected void onResume() { super.onResume(); loadDashboard(); }
+    protected void onResume() {
+        super.onResume();
+        loadDashboard();
+        checkNewBadges();
+    }
+    private void checkNewBadges() {
+        int profileId = Prefs.getActiveProfile(this);
+        if (profileId < 0) return;
+        List<Badge> newBadges = BadgeManager.checkAndAward(this, profileId);
+        if (!newBadges.isEmpty()) {
+            Badge b = newBadges.get(0);
+            new AlertDialog.Builder(this)
+                .setTitle(BadgeManager.getBadgeEmoji(b.badgeKey) + "  Badge Unlocked!")
+                .setMessage(b.badgeName + "\n" + b.badgeDesc)
+                .setPositiveButton("View All Badges", (d, w) ->
+                    startActivity(new Intent(this, BadgesActivity.class)))
+                .setNegativeButton("OK", null).show();
+        }
+    }
     private void loadDashboard() {
         AttendanceDao dao = db.attendanceDao();
         List<String> allDates = dao.getAllDates();
@@ -74,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         tvGoal.setText("Goal: " + goal + "%");
         if (allDates.isEmpty()) {
             tvPercent.setText("0%");
-            tvMotivation.setText("Set up subjects and start marking attendance");
+            tvMotivation.setText("Set up subjects and start marking");
             tvNeeded.setText("No data yet");
             tvCanMiss.setText("—");
             tvStreak.setText("0 days");
@@ -99,12 +119,12 @@ public class MainActivity extends AppCompatActivity {
             case "SAFE":
                 tvStatus.setText(pct >= 90 ? "Excellent Attendance" : "Safe Zone");
                 cardStatus.setCardBackgroundColor(0xFF15803D);
-                tvMotivation.setText(pct >= 90 ? "Perfect! Keep it up." : "Good attendance. Keep attending.");
+                tvMotivation.setText(pct >= 90 ? "Perfect! Keep it up." : "Good attendance. Keep going.");
                 break;
             case "WARNING":
                 tvStatus.setText("Warning — Getting Close");
                 cardStatus.setCardBackgroundColor(0xFFD97706);
-                tvMotivation.setText("Attendance is nearing the limit. Be careful.");
+                tvMotivation.setText("Attendance nearing limit. Be careful.");
                 break;
             default:
                 tvStatus.setText("Exam Risk — Below " + goal + "%");

@@ -32,6 +32,8 @@
         <activity android:name=".ExamTrackerActivity" android:exported="false"/>
         <activity android:name=".TimetableActivity" android:exported="false"/>
         <activity android:name=".PrivacyPolicyActivity" android:exported="false"/>
+        <activity android:name=".BadgesActivity" android:exported="false"/>
+        <activity android:name=".WeeklyStatsActivity" android:exported="false"/>
         <receiver android:name=".notification.ReminderReceiver" android:exported="false"/>
     </application>
 </manifest>
