@@ -83,7 +83,7 @@ public class ExamMarksActivity extends AppCompatActivity {
             if (group.isEmpty()) continue;
             TextView tvCat = new TextView(this);
             tvCat.setText(categories[cat]);
-            tvCat.setTextSize(13); tvCat.setTextStyle(android.graphics.Typeface.BOLD);
+            tvCat.setTextSize(13); tvCat.setTypeface(null, android.graphics.Typeface.BOLD);
             int[] catColors = {0xFF15803D, 0xFFD97706, 0xFFDC2626, 0xFF64748B};
             tvCat.setTextColor(catColors[cat]);
             tvCat.setPadding(0, 20, 0, 8);
